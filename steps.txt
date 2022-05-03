@@ -1,0 +1,14 @@
+npm i express jsonwebtoken dotenv express-async-errors http-status-codes
+npm i nodemon -D
+
+MIDDLEWARE
+-------------
+error-handler
+not-found
+auth
+
+ERRORS
+-------
+custom-error
+bad-request
+unauthorized
