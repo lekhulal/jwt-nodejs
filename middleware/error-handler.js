@@ -1,10 +1,19 @@
 const { StatusCodes } = require("http-status-codes")
-const { CustomError } = require("../errors")
 const errorHandler = async (err, req, res, next) => {
-    if (err instanceof CustomError) {
-        return res.status(err.statusCode).json({ errorMessage: err.message })
+    let customError = {
+        statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+        msg: err.message || 'Something went wrong, please try again later!',
     }
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Something went wrong, please try again later!`)
+
+    if (err.name === 'ValidationError') {
+        customError.msg = Object.values(err.errors)
+            .map((item) => item.message)
+            .join(',')
+        customError.statusCode = 400
+    }
+
+    return res.status(customError.statusCode).json({ errorMessage: customError.msg })
 }
 
 module.exports = errorHandler
+
